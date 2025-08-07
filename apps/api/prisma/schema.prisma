@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,7 +10,7 @@ datasource db {
 model User {
   id        Int       @id @default(autoincrement())
   name      String
-  email     String
+  email     String    @unique
   bio       String?
   avatar    String?
   password  String?
@@ -25,26 +22,27 @@ model User {
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
-  slug      String    @unique
+  id        Int      @id @default(autoincrement())
+  slug      String?  @unique
   title     String
   content   String
   thumbnail String?
   published Boolean
   authorId  Int
-  author    User      @relation(fields: [authorId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  comments  Comment[]
-  tags      Tag[]     @relation("PostTags")
-  likes     Like[]
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments Comment[]
+  tags     Tag[]     @relation("PostTags")
+  likes    Like[]
 }
 
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
   postId    Int
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   authorId  Int
   author    User     @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
@@ -58,11 +56,11 @@ model Tag {
 }
 
 model Like {
-  id Int     @id @default(autoincrement())
-  user User    @relation(fields: [userId], references: [id])
+  id     Int  @id @default(autoincrement())
   userId Int
-  post Post    @relation(fields: [postId], references: [id])
   postId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user   User @relation(fields: [userId], references: [id])
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
 }
