@@ -6,9 +6,9 @@ import { getSession } from "@/lib/session";
 import Like from "./_components/like";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 const PostPage = async ({ params }: Props) => {
   const postId = (await params).id;

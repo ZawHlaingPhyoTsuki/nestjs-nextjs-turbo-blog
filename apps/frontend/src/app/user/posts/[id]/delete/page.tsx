@@ -23,6 +23,7 @@ export default async function DeletePostPage(props: Props) {
   const params = await props.params;
   const post = await fetchPostById(+params.id);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formAction = async (formData: FormData) => {
     "use server";
     await deletePost(+params.id);
